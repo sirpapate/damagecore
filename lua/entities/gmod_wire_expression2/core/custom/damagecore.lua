@@ -107,7 +107,7 @@ registerType("damage", "dmg", DamageInfo(),
  	function(v)
  		return !istable(v)
  	end
-)	
+)
 
 registerOperator("ass", "dmg", "dmg", function(self, args)
 	local lhs, op2, scope = args[2], args[3], args[4]
@@ -131,7 +131,7 @@ e2function number operator_is(damage dmg)
 end
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
+
 local registered_e2s = {}
 local victim = nil
 local damageTab = {}
@@ -173,7 +173,7 @@ hook.Add("EntityTakeDamage","Expresion2TakeDamageInfo", function( targat, dmginf
 
 	damageClk = 0
 end)
- 
+
 e2function void runOnDmg(number activate)
 	if activate ~= 0 then
 		self.data.dmgtriggerbyall = true
@@ -186,7 +186,7 @@ end
 
 e2function void runOnDmg(number activate, entity ent)
 	if not IsValid(ent) then return nil end
-	
+
 	if activate ~= 0 then
 		self.data.dmgtriggerents[ent] = true
 		registered_e2s[self.entity] = true
@@ -215,14 +215,14 @@ e2function void runOnDmg(number activate, array ents)
 		end
 	end
 end
- 
+
 e2function void entity:trackDamage()
 	if not IsValid(this) then return nil end
 	registered_e2s[self.entity] = true
 
 	self.data.dmgtriggerents[this] = true
 end
- 
+
 e2function void array:trackDamage()
 	if not istable(this) then return end
 
@@ -301,15 +301,15 @@ end
 e2function string dmgType()
 	if not damageTab or not victim then return "" end
 
-	if damageTab.IsExplosionDamage then 
+	if damageTab.IsExplosionDamage then
 		return "Explosive" end
-	if damageTab.IsBulletDamage or damageTab.Type == DMG_BUCKSHOT then 
+	if damageTab.IsBulletDamage or damageTab.Type == DMG_BUCKSHOT then
 		return "Bullet" end
-	if damageTab.Type == DMG_SLASH or damageTab.Type == DMG_CLUB then 
+	if damageTab.Type == DMG_SLASH or damageTab.Type == DMG_CLUB then
 		return "Melee" end
-	if damageTab.IsFallDamage then 
+	if damageTab.IsFallDamage then
 		return "Fall" end
-	if damageTab.Type == DMG_CRUSH then 
+	if damageTab.Type == DMG_CRUSH then
 		return "Crush" end
 end
 
@@ -330,7 +330,7 @@ local sbox_E2_Dmg_Simple = CreateConVar( "sbox_E2_Dmg_Simple", "2", FCVAR_ARCHIV
 e2function void entity:dmgApplyDamage(number damage)
 	if not IsValid(this) and not this:IsEntity() then return nil end
 
-	if sbox_E2_Dmg_Simple:GetInt() == 2 then 
+	if sbox_E2_Dmg_Simple:GetInt() == 2 then
 		if this:IsPlayer() then
 			if not isfriend(self.player, this) then
 				return nil
@@ -340,17 +340,17 @@ e2function void entity:dmgApplyDamage(number damage)
 				return nil
 			end
 		end
-	elseif sbox_E2_Dmg_Simple:GetInt() == 3 and not self.player:IsAdmin() then 
-		return nil 
-	elseif sbox_E2_Dmg_Simple:GetInt() == 4 then 
+	elseif sbox_E2_Dmg_Simple:GetInt() == 3 and not self.player:IsAdmin() then
+		return nil
+	elseif sbox_E2_Dmg_Simple:GetInt() == 4 then
 		return nil
 	end
 
 	local dmginfo = DamageInfo()
-	dmginfo:SetAttacker( self.player )
-	dmginfo:SetDamage( damage )
-	dmginfo:SetInflictor( self.entity )
-	this:TakeDamageInfo( dmginfo )
+	dmginfo:SetAttacker(self.player)
+	dmginfo:SetDamage(damage)
+	dmginfo:SetInflictor(self.entity)
+	this:TakeDamageInfo(dmginfo)
 end
 
 
@@ -384,7 +384,7 @@ end
 --	if damageClk then
 --		if not victim or not dmg then return nil end
 
---		if sbox_E2_Dmg_Override:GetInt() == 2 then 
+--		if sbox_E2_Dmg_Override:GetInt() == 2 then
 --			if victim:IsPlayer() then
 --				if not isfriend(self.player, victim) then
 --					return nil
@@ -394,8 +394,8 @@ end
 --					return nil
 --				end
 --			end
---		elseif sbox_E2_Dmg_Override:GetInt() == 3 and not self.player:IsAdmin() then 
---			return nil 
+--		elseif sbox_E2_Dmg_Override:GetInt() == 3 and not self.player:IsAdmin() then
+--			return nil
 --		elseif sbox_E2_Dmg_Override:GetInt() == 4 then
 --			return nil
 --		end
@@ -497,6 +497,8 @@ end
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 e2function damage damage:setAttacker(entity attacker)
+	if not IsValid(attacker) then return end
+
 	if not this or not IsValid(attacker) then return nil end
 	this.Attacker = attacker
 	return this
@@ -527,6 +529,8 @@ e2function damage damage:setType(number type)
 end
 
 e2function damage damage:setInflictor(entity inflictor)
+	if not IsValid(inflictor) then return end
+
 	if not this or not inflictor then return nil end
 	this.Inflictor = inflictor
 	return this
@@ -538,7 +542,7 @@ end
 local sbox_E2_Dmg_Adv = CreateConVar( "sbox_E2_Dmg_Adv", "2", FCVAR_ARCHIVE )
 
 local function candamage(ply1, ply2)
-	if sbox_E2_Dmg_Adv:GetInt() == 2 and CPPI then 
+	if sbox_E2_Dmg_Adv:GetInt() == 2 and CPPI then
 		if ply2:IsPlayer() then
 			if not isfriend(ply1, ply2) then
 				return false
@@ -548,8 +552,8 @@ local function candamage(ply1, ply2)
 				return false
 			end
 		end
-	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not ply1:IsAdmin() then 
-		return false 
+	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not ply1:IsAdmin() then
+		return false
 	elseif sbox_E2_Dmg_Adv:GetInt() == 4 then
 		return false
 	end
@@ -558,9 +562,10 @@ local function candamage(ply1, ply2)
 end
 
 e2function void entity:takeDamage(damage dmg)
+	if not IsValid(this) then return nil end
 	if not this or not dmg then return nil end
 	if not candamage(self.player, this) then return nil end
-	
+
 
 	if not IsValid(dmg.Attacker) then
 		dmg.Attacker = self.player
@@ -575,72 +580,79 @@ e2function void entity:takeDamage(damage dmg)
 end
 
 e2function void entity:takeDamage(number dmg)
+	if not IsValid(this) then return nil end
 	if not this or not dmg then return nil end
 	if not candamage(self.player, this)  then return nil end
 
 	attacker = self.player
 	inflictor = self.entity
 
-	this:TakeDamage(dmg, attacker, inflictor) 
+	this:TakeDamage(dmg, attacker, inflictor)
 end
 
 e2function void entity:takeDamage(number dmg, entity attacker)
+	if not IsValid(this) then return nil end
 	if not this or not dmg then return nil end
 	if not candamage(self.player, this)  then return nil end
 
-	if not IsValid(attacker) then 
+	if not IsValid(attacker) then
 		attacker = self.player
 	end
 
 	inflictor = self.entity
-	this:TakeDamage(dmg, attacker, inflictor) 
+	this:TakeDamage(dmg, attacker, inflictor)
 end
 
 e2function void entity:takeDamage(number dmg, entity attacker, entity inflictor)
+	if not IsValid(this) then return nil end
 	if not this or not dmg then return nil end
 	if not candamage(self.player, this)  then return nil end
 
-	if not IsValid(attacker) then 
+	if not IsValid(attacker) then
 		attacker = self.player
 	end
 
-	if not IsValid(inflictor) then 
+	if not IsValid(inflictor) then
 		inflictor = self.entity
 	end
 
-	this:TakeDamage(dmg, attacker, inflictor) 
+	this:TakeDamage(dmg, attacker, inflictor)
 end
 
 e2function void blastDamage(damage dmg, vector pos, number radius)
 	if sbox_E2_Dmg_Adv:GetInt() == 2 and not self.player:IsAdmin() then return nil
-	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not self.player:IsAdmin() then return nil 
+	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not self.player:IsAdmin() then return nil
 	elseif sbox_E2_Dmg_Adv:GetInt() == 4 then return nil end
 
-	if not IsValid(dmg.Attacker) then 
+	if not IsValid(dmg.Attacker) then
 		dmg.Attacker = self.player
 	end
 
-	if not IsValid(dmg.Inflictor) then 
+	if not IsValid(dmg.Inflictor) then
 		dmg.Inflictor = self.entity
 	end
 
 	local dmginfo = tabtodamage(dmg)
+	local pos = Vector(pos[1], pos[2], pos[3])
 	util.BlastDamageInfo(dmginfo, pos, radius)
 end
-  
+
 e2function void blastDamage(entity inflictor, entity attacker, vector pos, number radius, number damage)
+	if not IsValid(inflictor) then return end
+	if not IsValid(attacker) then return end
+
 	if sbox_E2_Dmg_Adv:GetInt() == 2 and not self.player:IsAdmin() then return nil
-	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not self.player:IsAdmin() then return nil 
+	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not self.player:IsAdmin() then return nil
 	elseif sbox_E2_Dmg_Adv:GetInt() == 4 then return nil end
 
-	if not IsValid(attacker) then 
+	if not IsValid(attacker) then
 		attacker = self.player
 	end
 
-	if not IsValid(inflictor) then 
+	if not IsValid(inflictor) then
 		inflictor = self.entity
 	end
 
+	local pos = Vector(pos[1], pos[2], pos[3])
 	util.BlastDamage(inflictor, attacker, pos, radius, damage)
 end
-  

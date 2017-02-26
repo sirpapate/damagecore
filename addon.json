@@ -5,6 +5,7 @@
 	"ignore"	:	[
 	        	"*.cmd",
 	        	"*.gma",
-	        	"addonid.txt"
+	        	"addonid.txt",
+				".git*"
 	]
 }
