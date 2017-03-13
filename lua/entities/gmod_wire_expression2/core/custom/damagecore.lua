@@ -316,6 +316,10 @@ end
 ////////////////////////////////////////////////////
 
 local function isfriend(ply1, ply2)
+	if not CPPI then
+		return true
+	end
+
 	for k, v in pairs( ply2:CPPIGetFriends() )  do
 		if v == ply1 then
 			return true
@@ -336,7 +340,7 @@ e2function void entity:dmgApplyDamage(number damage)
 				return nil
 			end
 		else
-			if not this:CPPICanDamage(self.player) then
+			if CPPI and not this:CPPICanDamage(self.player) then
 				return nil
 			end
 		end
