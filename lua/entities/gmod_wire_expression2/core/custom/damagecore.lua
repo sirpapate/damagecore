@@ -332,7 +332,7 @@ end
 local sbox_E2_Dmg_Simple = CreateConVar( "sbox_E2_Dmg_Simple", "2", FCVAR_ARCHIVE )
 
 e2function void entity:dmgApplyDamage(number damage)
-	if not IsValid(this) and not this:IsEntity() then return nil end
+	if not IsValid(this) then return nil end
 
 	if sbox_E2_Dmg_Simple:GetInt() == 2 then
 		if this:IsPlayer() then
