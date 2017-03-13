@@ -340,8 +340,16 @@ e2function void entity:dmgApplyDamage(number damage)
 				return nil
 			end
 		else
-			if CPPI and not this:CPPICanDamage(self.player) then
-				return nil
+			if CPPI then
+				if this.CPPICanDamage then
+					if not this:CPPICanDamage(self.player) then
+						return nil
+					end
+				else
+					if not isfriend(this:CPPIGetOwner(), self.player) then
+						return nil
+					end
+				end
 			end
 		end
 	elseif sbox_E2_Dmg_Simple:GetInt() == 3 and not self.player:IsAdmin() then
@@ -545,18 +553,23 @@ end
 
 local sbox_E2_Dmg_Adv = CreateConVar( "sbox_E2_Dmg_Adv", "2", FCVAR_ARCHIVE )
 
-local function candamage(ply1, ply2)
+local function candamage(ply, ent)
 	if sbox_E2_Dmg_Adv:GetInt() == 2 and CPPI then
-		if ply2:IsPlayer() then
-			if not isfriend(ply1, ply2) then
+		if ent:IsPlayer() then
+			if not isfriend(ply, ent) then
 				return false
 			end
 		else
-			if not ply2:CPPICanDamage(ply1) then
-				return false
+			if ent.CPPICanDamage then
+				if not ent:CPPICanDamage(ply) then
+					return false
+				end
+			else
+				local owner = ent:CPPIGetOwner()
+				return candamage(ply, owner)
 			end
 		end
-	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not ply1:IsAdmin() then
+	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not ply:IsAdmin() then
 		return false
 	elseif sbox_E2_Dmg_Adv:GetInt() == 4 then
 		return false
