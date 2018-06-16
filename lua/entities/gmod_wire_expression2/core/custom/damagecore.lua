@@ -92,7 +92,7 @@ local function tabtodamage(tab)
 	return dmg
 end
 
-registerType("damage", "dmg", DamageInfo(),
+registerType("damage", "xdc", DamageInfo(),
  	function(self, input)
  		if IsEmpty(input) then
  			return table.Copy(DEFAULT)
@@ -109,7 +109,7 @@ registerType("damage", "dmg", DamageInfo(),
  	end
 )
 
-registerOperator("ass", "dmg", "dmg", function(self, args)
+registerOperator("ass", "xdc", "xdc", function(self, args)
 	local lhs, op2, scope = args[2], args[3], args[4]
 	local      rhs = op2[1](self, op2)
 
