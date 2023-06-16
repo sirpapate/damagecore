@@ -287,6 +287,22 @@ e2function void array:stopTrackDamage()
 	end
 end
 
+e2function array getDamageTrackedEntities()
+	local entities = {}
+
+	for entity, tracked in pairs(self.data.dmgtriggerents) do
+		if tracked then
+			table.insert(entities, entity)
+		end
+	end
+
+	return entities
+end
+
+e2function number entity:isDamageTracked()
+	return self.data.dmgtriggerents[this] and 1 or 0
+end
+
 e2function number dmgClk()
 	if not damageTab or not victim then return 0 end
 	if not IsValid(victim) or not IsEntity(victim) then return 0 end
