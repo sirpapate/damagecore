@@ -158,17 +158,17 @@ hook.Add("EntityRemoved", "E2DmgClkRemove", function(ent)
 end)
 
 E2Lib.registerEvent("damage", {
-	{ "Entity", "e" },
+	{ "Victim", "e" },
 	{ "Damage", "xdm" }
 })
 
 E2Lib.registerEvent("trackedDamage", {
-	{ "Entity", "e" },
+	{ "Victim", "e" },
 	{ "Damage", "xdm" }
 })
 
 E2Lib.registerEvent("playerDamage", {
-	{ "Player", "e" },
+	{ "Victim", "e" },
 	{ "Damage", "xdm" }
 })
 
@@ -212,14 +212,14 @@ e2function void runOnDmg(number activate)
 	end
 end
 
-e2function void runOnDmg(number activate, entity ent)
-	if not IsValid(ent) then return nil end
+e2function void runOnDmg(number activate, entity entity)
+	if not IsValid(entity) then return nil end
 
 	if activate ~= 0 then
-		self.data.dmgtriggerents[ent] = true
+		self.data.dmgtriggerents[entity] = true
 		registered_e2s[self.entity] = true
 	else
-		self.data.dmgtriggerents[ent] = nil
+		self.data.dmgtriggerents[entity] = nil
 
 		if not #self.data.dmgtriggerents then
 			registered_e2s[self.entity] = nil
@@ -227,14 +227,14 @@ e2function void runOnDmg(number activate, entity ent)
 	end
 end
 
-e2function void runOnDmg(number activate, array ents)
+e2function void runOnDmg(number activate, array entities)
 	if activate ~= 0 then
-		for _,ent in pairs(ents) do
+		for _,ent in pairs(entities) do
 			self.data.dmgtriggerents[ent] = true
 		end
 		registered_e2s[self.entity] = true
 	else
-		for _,ent in pairs(ents) do
+		for _,ent in pairs(entities) do
 			self.data.dmgtriggerents[ent] = nil
 		end
 
@@ -556,9 +556,9 @@ e2function damage damage:setForce(vector force)
 	return this
 end
 
-e2function damage damage:setPosition(vector pos)
-	if not this or not isvector(pos) then return nil end
-	this.Pos = Vector(pos[1], pos[2], pos[3])
+e2function damage damage:setPosition(vector position)
+	if not this or not isvector(position) then return nil end
+	this.Pos = Vector(position[1], position[2], position[3])
 	return this
 end
 
@@ -606,38 +606,44 @@ local function candamage(ply, ent)
 	return true
 end
 
-e2function void entity:takeDamage(damage dmg)
+e2function number canDamage(entity target)
+	if not candamage(self.player, target) then return 0 end
+
+	return 1
+end
+
+e2function void entity:takeDamage(damage damage)
 	if not IsValid(this) then return nil end
-	if not this or not dmg then return nil end
+	if not this or not damage then return nil end
 	if not candamage(self.player, this) then return nil end
 
 
-	if not IsValid(dmg.Attacker) then
-		dmg.Attacker = self.player
+	if not IsValid(damage.Attacker) then
+		damage.Attacker = self.player
 	end
 
-	if not IsValid(dmg.Inflictor) then
-		dmg.Inflictor = self.entity
+	if not IsValid(damage.Inflictor) then
+		damage.Inflictor = self.entity
 	end
 
-	local dmginfo = tabtodamage(dmg)
+	local dmginfo = tabtodamage(damage)
 	this:TakeDamageInfo(dmginfo)
 end
 
-e2function void entity:takeDamage(number dmg)
+e2function void entity:takeDamage(number damageAmount)
 	if not IsValid(this) then return nil end
-	if not this or not dmg then return nil end
+	if not this or not damageAmount then return nil end
 	if not candamage(self.player, this)  then return nil end
 
 	attacker = self.player
 	inflictor = self.entity
 
-	this:TakeDamage(dmg, attacker, inflictor)
+	this:TakeDamage(damageAmount, attacker, inflictor)
 end
 
-e2function void entity:takeDamage(number dmg, entity attacker)
+e2function void entity:takeDamage(number damageAmount, entity attacker)
 	if not IsValid(this) then return nil end
-	if not this or not dmg then return nil end
+	if not this or not damageAmount then return nil end
 	if not candamage(self.player, this)  then return nil end
 
 	if not IsValid(attacker) then
@@ -645,12 +651,12 @@ e2function void entity:takeDamage(number dmg, entity attacker)
 	end
 
 	inflictor = self.entity
-	this:TakeDamage(dmg, attacker, inflictor)
+	this:TakeDamage(damageAmount, attacker, inflictor)
 end
 
-e2function void entity:takeDamage(number dmg, entity attacker, entity inflictor)
+e2function void entity:takeDamage(number damageAmount, entity attacker, entity inflictor)
 	if not IsValid(this) then return nil end
-	if not this or not dmg then return nil end
+	if not this or not damageAmount then return nil end
 	if not candamage(self.player, this)  then return nil end
 
 	if not IsValid(attacker) then
@@ -661,28 +667,28 @@ e2function void entity:takeDamage(number dmg, entity attacker, entity inflictor)
 		inflictor = self.entity
 	end
 
-	this:TakeDamage(dmg, attacker, inflictor)
+	this:TakeDamage(damageAmount, attacker, inflictor)
 end
 
-e2function void blastDamage(damage dmg, vector pos, number radius)
+e2function void blastDamage(damage damageAmount, vector position, number radius)
 	if sbox_E2_Dmg_Adv:GetInt() == 2 and not self.player:IsAdmin() then return nil
 	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not self.player:IsAdmin() then return nil
 	elseif sbox_E2_Dmg_Adv:GetInt() == 4 then return nil end
 
-	if not IsValid(dmg.Attacker) then
-		dmg.Attacker = self.player
+	if not IsValid(damageAmount.Attacker) then
+		damageAmount.Attacker = self.player
 	end
 
-	if not IsValid(dmg.Inflictor) then
-		dmg.Inflictor = self.entity
+	if not IsValid(damageAmount.Inflictor) then
+		damageAmount.Inflictor = self.entity
 	end
 
-	local dmginfo = tabtodamage(dmg)
-	local pos = Vector(pos[1], pos[2], pos[3])
+	local dmginfo = tabtodamage(damageAmount)
+	local pos = Vector(position[1], position[2], position[3])
 	util.BlastDamageInfo(dmginfo, pos, radius)
 end
 
-e2function void blastDamage(entity inflictor, entity attacker, vector pos, number radius, number damage)
+e2function void blastDamage(entity inflictor, entity attacker, vector position, number radius, number damageAmount)
 	if not IsValid(inflictor) then return end
 	if not IsValid(attacker) then return end
 
@@ -698,6 +704,6 @@ e2function void blastDamage(entity inflictor, entity attacker, vector pos, numbe
 		inflictor = self.entity
 	end
 
-	local pos = Vector(pos[1], pos[2], pos[3])
-	util.BlastDamage(inflictor, attacker, pos, radius, damage)
+	local pos = Vector(position[1], position[2], position[3])
+	util.BlastDamage(inflictor, attacker, pos, radius, damageAmount)
 end
