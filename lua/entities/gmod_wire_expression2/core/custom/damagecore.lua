@@ -157,6 +157,21 @@ hook.Add("EntityRemoved", "E2DmgClkRemove", function(ent)
 	end
 end)
 
+E2Lib.registerEvent("damage", {
+	{ "Entity", "e" },
+	{ "Damage", "xdm" }
+})
+
+E2Lib.registerEvent("trackedDamage", {
+	{ "Entity", "e" },
+	{ "Damage", "xdm" }
+})
+
+E2Lib.registerEvent("playerDamage", {
+	{ "Player", "e" },
+	{ "Damage", "xdm" }
+})
+
 hook.Add("EntityTakeDamage","Expresion2TakeDamageInfo", function( targat, dmginfo )
 	victim = targat
 	damageTab = damagetotab(dmginfo)
@@ -168,6 +183,19 @@ hook.Add("EntityTakeDamage","Expresion2TakeDamageInfo", function( targat, dmginf
 			if ent.context.data.dmgtriggerbyall or ent.context.data.dmgtriggerents[victim] then
 				ent:Execute()
 			end
+
+			-- 
+			if ent.context.data.dmgtriggerents[victim] and ent.ExecuteEvent then
+				ent:ExecuteEvent("trackedDamage", {victim, damageTab})
+			end
+		end
+	end
+
+	if IsValid(victim) and damageInfo then
+		E2Lib.triggerEvent("damage", {victim, damageTab})
+
+		if victim:IsPlayer() then
+			E2Lib.triggerEvent("playerDamage", {victim, damageTab})
 		end
 	end
 
