@@ -202,6 +202,8 @@ hook.Add("EntityTakeDamage","Expresion2TakeDamageInfo", function( targat, dmginf
 	damageClk = 0
 end)
 
+--- If set to 1, E2 will run when an entity takes damage.
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function void runOnDmg(number activate)
 	if activate ~= 0 then
 		self.data.dmgtriggerbyall = true
@@ -212,6 +214,8 @@ e2function void runOnDmg(number activate)
 	end
 end
 
+--- If set to 1, E2 will run when specified entity takes damage.
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function void runOnDmg(number activate, entity entity)
 	if not IsValid(entity) then return nil end
 
@@ -227,6 +231,8 @@ e2function void runOnDmg(number activate, entity entity)
 	end
 end
 
+--- If set to 1, E2 will run when specified entities take damage.
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function void runOnDmg(number activate, array entities)
 	if activate ~= 0 then
 		for _,ent in pairs(entities) do
@@ -244,6 +250,7 @@ e2function void runOnDmg(number activate, array entities)
 	end
 end
 
+--- E2 will run when the specified entity takes damage.
 e2function void entity:trackDamage()
 	if not IsValid(this) then return nil end
 	registered_e2s[self.entity] = true
@@ -251,6 +258,7 @@ e2function void entity:trackDamage()
 	self.data.dmgtriggerents[this] = true
 end
 
+--- E2 will run when the specified entities take damage.
 e2function void array:trackDamage()
 	if not istable(this) then return end
 
@@ -263,6 +271,7 @@ e2function void array:trackDamage()
 	end
 end
 
+--- E2 will no longer run when the specified entity takes damage.
 e2function void entity:stopTrackDamage()
 	if not IsValid(this) then return nil end
 
@@ -273,6 +282,7 @@ e2function void entity:stopTrackDamage()
 	end
 end
 
+--- E2 will no longer run when the specified entities take damage.
 e2function void array:stopTrackDamage()
 	if not istable(this) then return end
 
@@ -287,6 +297,7 @@ e2function void array:stopTrackDamage()
 	end
 end
 
+--- Returns a array of all tracked entities.
 e2function array getDamageTrackedEntities()
 	local entities = {}
 
@@ -299,10 +310,13 @@ e2function array getDamageTrackedEntities()
 	return entities
 end
 
+--- Returns 1 if the entity is tracked. Returns 0 otherwise.
 e2function number entity:isDamageTracked()
 	return self.data.dmgtriggerents[this] and 1 or 0
 end
 
+--- Returns 1 if the chip is being executed because of a damage event. Returns 0 otherwise.
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function number dmgClk()
 	if not damageTab or not victim then return 0 end
 	if not IsValid(victim) or not IsEntity(victim) then return 0 end
@@ -312,36 +326,43 @@ end
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function number dmgDamage()
 	if not damageTab or not victim then return 0 end
 	return damageTab.Damage
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function entity dmgAttacker()
 	if not damageTab or not victim then return NULL end
 	return damageTab.Attacker
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function entity dmgVictim()
 	if not damageTab or not victim then return NULL end
 	return victim
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function vector dmgPos()
 	if not damageTab or not victim then return Vector(0,0,0) end
 	return damageTab.Pos
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function vector dmgForce()
 	if not damageTab or not victim then return Vector(0,0,0) end
 	return damageTab.Force
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function entity dmgInflictor()
 	if not damageTab or not victim then return NULL end
 	return damageTab.Inflictor
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function string dmgType()
 	if not damageTab or not victim then return "" end
 
@@ -375,6 +396,7 @@ end
 
 local sbox_E2_Dmg_Simple = CreateConVar( "sbox_E2_Dmg_Simple", "2", FCVAR_ARCHIVE )
 
+[nodiscard, deprecated = "Use takeDamage instead"]
 e2function void entity:dmgApplyDamage(number damage)
 	if not IsValid(this) then return nil end
 
@@ -413,22 +435,25 @@ end
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+--- Makes an empty damage.
 e2function damage damage()
 	return table.Copy(DEFAULT)
 end
 
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function damage lastDamage()
 	if not damageTab then return table.Copy(DEFAULT) end
 	return table.Copy(damageTab)
 end
 
+[nodiscard, deprecated = "Use the damage event instead"]
 e2function entity lastDamageVictim()
 	if not victim then return NULL end
 	return victim
 end
 
+--- Returns a copy of the damage.
 e2function damage damage:clone()
 	return table.Copy(this)
 end
@@ -481,6 +506,7 @@ local ids = {
 
 local DEFAULT = {n={},ntypes={},s={},stypes={},size=0}
 
+--- Converts the damage into a table.
 e2function table damage:toTable()
 	if not this then return DEFAULT end
 
@@ -501,31 +527,37 @@ end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+--- Returns the attacker of damage.
 e2function entity damage:getAttacker()
 	if not this then return NULL end
 	return this.Attacker
 end
 
+--- Returns the damage amount.
 e2function number damage:getDamage()
 	if not this then return 0 end
 	return this.Damage
 end
 
+--- Returns a vector representing the damage force.
 e2function vector damage:getForce()
 	if not this then return Vector(0,0,0) end
 	return this.Force
 end
 
+--- Returns the position where the damage was or is going to be applied to.
 e2function vector damage:getPosition()
 	if not this then return Vector(0,0,0) end
 	return this.Pos
 end
 
+--- Returns a bitflag which indicates the damage type of the damage.
 e2function number damage:getType()
 	if not this then return 0 end
 	return this.Type
 end
 
+--- 	Returns the inflictor of the damage. This is not necessarily a weapon.
 e2function entity damage:getInflictor()
 	if not this then return NULL end
 	return this.Inflictor
@@ -534,16 +566,19 @@ end
 
 ///////////////////////////////////////////////////////////////////
 
+--- Returns 1 if the damage was caused by a bullet.
 e2function number damage:isBulletDamage()
 	if not this then return 0 end
 	return this.IsBulletDamage and 1 or 0
 end
 
+--- Returns 1 if the damage contains explosion damage.
 e2function number damage:isExplosionDamage()
 	if not this then return 0 end
 	return this.IsExplosionDamage and 1 or 0
 end
 
+--- Returns 1 if the damage contains fall damage.
 e2function number damage:isFallDamage()
 	if not this then return 0 end
 	return this.IsFallDamage and 1 or 0
@@ -552,6 +587,7 @@ end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+--- Sets the attacker of the damage. Returns itself.
 e2function damage damage:setAttacker(entity attacker)
 	if not IsValid(attacker) then return end
 
@@ -560,30 +596,35 @@ e2function damage damage:setAttacker(entity attacker)
 	return this
 end
 
+--- Sets the amount of damage. Returns itself.
 e2function damage damage:setDamage(number damage)
 	if not this  or not damage then return nil end
 	this.Damage = damage
 	return this
 end
 
+--- Sets the directional force of the damage. Returns itself.
 e2function damage damage:setForce(vector force)
 	if not this or not isvector(force) then return nil end
 	this.Force = Vector(force[1], force[2], force[3])
 	return this
 end
 
+--- Sets the position of where the damage gets applied to. Returns itself.
 e2function damage damage:setPosition(vector position)
 	if not this or not isvector(position) then return nil end
 	this.Pos = Vector(position[1], position[2], position[3])
 	return this
 end
 
+--- Sets the damage type. Returns itself.
 e2function damage damage:setType(number type)
 	if not this or not type then return nil end
 	this.Type = type
 	return this
 end
 
+--- Sets the inflictor of the damage for example a weapon. Returns itself.
 e2function damage damage:setInflictor(entity inflictor)
 	if not IsValid(inflictor) then return end
 
@@ -622,12 +663,14 @@ local function candamage(ply, ent)
 	return true
 end
 
+--- Returns 1 if the entity can be damaged by the player.
 e2function number canDamage(entity target)
 	if not candamage(self.player, target) then return 0 end
 
 	return 1
 end
 
+--- Applies the damage specified by the damage info to the entity.
 e2function void entity:takeDamage(damage damage)
 	if not IsValid(this) then return nil end
 	if not this or not damage then return nil end
@@ -646,6 +689,7 @@ e2function void entity:takeDamage(damage damage)
 	this:TakeDamageInfo(dmginfo)
 end
 
+--- Applies the specified amount of damage to the entity. (Damage Amount)
 e2function void entity:takeDamage(number damageAmount)
 	if not IsValid(this) then return nil end
 	if not this or not damageAmount then return nil end
@@ -657,6 +701,7 @@ e2function void entity:takeDamage(number damageAmount)
 	this:TakeDamage(damageAmount, attacker, inflictor)
 end
 
+--- Applies the specified amount of damage to the entity. (Damage Amount, Attacker)
 e2function void entity:takeDamage(number damageAmount, entity attacker)
 	if not IsValid(this) then return nil end
 	if not this or not damageAmount then return nil end
@@ -670,6 +715,7 @@ e2function void entity:takeDamage(number damageAmount, entity attacker)
 	this:TakeDamage(damageAmount, attacker, inflictor)
 end
 
+--- Applies the specified amount of damage to the entity. (Damage Amount, Attacker, Inflictor)
 e2function void entity:takeDamage(number damageAmount, entity attacker, entity inflictor)
 	if not IsValid(this) then return nil end
 	if not this or not damageAmount then return nil end
@@ -686,6 +732,7 @@ e2function void entity:takeDamage(number damageAmount, entity attacker, entity i
 	this:TakeDamage(damageAmount, attacker, inflictor)
 end
 
+--- Applies spherical damage based on damage info to all entities in the specified radius. (Damage, Position, Radius)
 e2function void blastDamage(damage damageAmount, vector position, number radius)
 	if sbox_E2_Dmg_Adv:GetInt() == 2 and not self.player:IsAdmin() then return nil
 	elseif sbox_E2_Dmg_Adv:GetInt() == 3 and not self.player:IsAdmin() then return nil
@@ -704,6 +751,7 @@ e2function void blastDamage(damage damageAmount, vector position, number radius)
 	util.BlastDamageInfo(dmginfo, pos, radius)
 end
 
+--- Applies explosion damage to all entities in the specified radius. (Attacker, Inflictor, Position, Radius, Damage Amount)
 e2function void blastDamage(entity inflictor, entity attacker, vector position, number radius, number damageAmount)
 	if not IsValid(inflictor) then return end
 	if not IsValid(attacker) then return end

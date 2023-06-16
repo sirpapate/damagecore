@@ -24,17 +24,20 @@ Clone this repository into your `steamapps\common\GarrysMod\garrysmod\addons` fo
 | `event playerDamage(Victim:entity, Damage:damage)`  |                                                | Triggered when a player takes damage.                                                           |
 
 ### Tick Functions
-| Function              | Return | Description                                                                             |
-|-----------------------|:------:|-----------------------------------------------------------------------------------------|
-| `runOnDmg(N)`         |        | If set to 1, E2 will run when an entity takes damage.                                   |
-| `runOnDmg(N,E)`       |        | If set to 1, E2 will run when specified entity takes damage.                            |
-| `runOnDmg(N,R)`       |        | If set to 1, E2 will run when specified entities take damage.                           |
-| `E:trackDamage()`     |        | E2 will run when the specified entity takes damage.                                     |
-| `T:trackDamage()`     |        | E2 will run when the specified entities take damage.                                    |
-| `E:stopTrackDamage()` |        | E2 will no longer when the specified entity takes damage.                               |
-| `dmgClk()`            | N      | Returns 1 if the chip is being executed because of a damage event. Returns 0 otherwise. |
-| `lastDamage()`        | XDM    | Returns the last damage.                                                                |
-| `lastDamageVictim()`  | E      | Returns the victim of the last damage.                                                  |
+| Function                     | Return | Description                                                                             |
+|------------------------------|:------:|-----------------------------------------------------------------------------------------|
+| `runOnDmg(N)`                |        | If set to 1, E2 will run when an entity takes damage.                                   |
+| `runOnDmg(N,E)`              |        | If set to 1, E2 will run when specified entity takes damage.                            |
+| `runOnDmg(N,R)`              |        | If set to 1, E2 will run when specified entities take damage.                           |
+| `E:trackDamage()`            |        | E2 will run when the specified entity takes damage.                                     |
+| `T:trackDamage()`            |        | E2 will run when the specified entities take damage.                                    |
+| `E:stopTrackDamage()`        |        | E2 will no longer run when the specified entity takes damage.                           |
+| `R:stopTrackDamage()`        |        | E2 will no longer run when the specified entities take damage.                          |
+| `getDamageTrackedEntities()` | R      | Returns a array of all tracked entities.                                                |
+| `E:isDamageTracked()`        | N      | Returns 1 if the entity is tracked. Returns 0 otherwise.                                |
+| `dmgClk()`                   | N      | Returns 1 if the chip is being executed because of a damage event. Returns 0 otherwise. |
+| `lastDamage()`               | XDM    | Returns the last damage.                                                                |
+| `lastDamageVictim()`         | E      | Returns the victim of the last damage.                                                  |
 
 ### Damage Type
 | Function                  | Return | Description                                                             |
@@ -42,7 +45,7 @@ Clone this repository into your `steamapps\common\GarrysMod\garrysmod\addons` fo
 | `damage()`                | XDM    | Makes an empty damage.                                                  |
 | `XDM:clone()`             | XDM    | Returns a copy of the damage.                                           |
 | `XDM:toTable()`           | T      | Converts the damage into a table.                                       |
-| `XDM:getDamage()`         | N      | Returns damage.                                                         |
+| `XDM:getDamage()`         | N      | Returns the damage amount.                                              |
 | `XDM:getAttacker()`       | E      | Returns the attacker of damage.                                         |
 | `XDM:getForce()`          | V      | Returns a vector representing the damage force.                         |
 | `XDM:getPosition()`       | V      | Returns the position where the damage was or is going to be applied to. |
@@ -61,8 +64,9 @@ Clone this repository into your `steamapps\common\GarrysMod\garrysmod\addons` fo
 ### Applying Damage Functions
 | Function                 | Return | Description                                                                                                              |
 |--------------------------|:------:|--------------------------------------------------------------------------------------------------------------------------|
-| `canDamage(E)`           | N      | Returns if the owner can damage the target.                                                                              |
+| `canDamage(E)`           | N      | Returns 1 if the entity can be damaged by the player.                                                                    |
 | `E:takeDamage(XDM)`      |        | Applies the damage specified by the damage info to the entity.                                                           |
+| `E:takeDamage(N,E)`      |        | Applies the specified amount of damage to the entity. (Damage Amount)                                                    |
 | `E:takeDamage(N,E)`      |        | Applies the specified amount of damage to the entity. (Damage Amount, Attacker)                                          |
 | `E:takeDamage(N,E,E)`    |        | Applies the specified amount of damage to the entity. (Damage Amount, Attacker, Inflictor)                               |
 | `blastDamage(XDM,V,N)`   |        | Applies spherical damage based on damage info to all entities in the specified radius. (Damage, Position, Radius)        |
